@@ -82,7 +82,7 @@ function App() {
     }
 
     try {
-      const response = await fetch('/report', {
+      const response = await fetch('http://localhost:4000/report', {
         method: 'POST',
         body: formDataToSend,
       });
