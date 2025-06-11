@@ -37,11 +37,12 @@ const getEmailConfig = () => ({
   subjectPrefix: process.env.EMAIL_SUBJECT_PREFIX || '[Golf Maintenance]'
 });
 
-app.get('/', (req, res) => {
-  res.send('Golf Maintenance Portal Backend Running');
+app.get('/api/health', (req, res) => {
+  res.json({ status: 'ok' });
 });
 
-app.post('/report', upload.single('photo'), async (req, res) => {
+app.post('/api/report', upload.single('photo'), async (req, res) => {
+  console.log('Received report submission:', req.body);
   const { course, hole, location, description, memberType, memberNumber } = req.body;
   const photo = req.file;
 
@@ -132,7 +133,7 @@ app.post('/report', upload.single('photo'), async (req, res) => {
   }
 });
 
-// Add this before the app.listen call
+// Handle all other routes by serving the React app
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'frontend/build', 'index.html'));
 });

@@ -82,7 +82,7 @@ function App() {
     }
 
     try {
-      const response = await fetch('http://localhost:4000/report', {
+      const response = await fetch('/api/report', {
         method: 'POST',
         body: formDataToSend,
         credentials: 'include',
@@ -92,6 +92,8 @@ function App() {
       });
       
       if (!response.ok) {
+        const errorText = await response.text();
+        console.error('Server response:', errorText);
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       
@@ -117,7 +119,7 @@ function App() {
       console.error('Error details:', error);
       setSubmitStatus({
         success: false,
-        message: `Error submitting report: ${error.message}. Please make sure the backend server is running.`
+        message: `Error submitting report: ${error.message}. Please try again later.`
       });
     } finally {
       setIsSubmitting(false);
