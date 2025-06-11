@@ -9,11 +9,18 @@ const path = require('path');
 const app = express();
 const upload = multer({ dest: 'uploads/' });
 
+// Enable CORS for all routes
+app.use(cors({
+  origin: ['http://localhost:3000', 'https://thunderous-cascaron-fba5b8.netlify.app'],
+  methods: ['GET', 'POST'],
+  credentials: true
+}));
+
+// Parse JSON bodies
+app.use(express.json());
+
 // Serve static files from the frontend build directory
 app.use(express.static(path.join(__dirname, 'frontend/build')));
-
-app.use(cors());
-app.use(express.json());
 
 // Helper function to get maintenance emails
 const getMaintenanceEmails = () => {
