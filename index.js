@@ -24,9 +24,6 @@ app.options('*', cors());
 // Parse JSON bodies
 app.use(express.json());
 
-// Serve static files from the frontend build directory
-app.use(express.static(path.join(__dirname, 'frontend/build')));
-
 // Helper function to get maintenance emails
 const getMaintenanceEmails = () => {
   const emails = process.env.MAINTENANCE_EMAILS || '';
@@ -42,6 +39,7 @@ const getEmailConfig = () => ({
   subjectPrefix: process.env.EMAIL_SUBJECT_PREFIX || '[Golf Maintenance]'
 });
 
+// API Routes
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok' });
 });
@@ -141,6 +139,9 @@ app.post('/api/report', upload.single('photo'), async (req, res) => {
     res.status(500).json({ success: false, error: error.message });
   }
 });
+
+// Serve static files from the frontend build directory AFTER API routes
+app.use(express.static(path.join(__dirname, 'frontend/build')));
 
 // Handle all other routes by serving the React app
 app.get('*', (req, res) => {
