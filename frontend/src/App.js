@@ -82,7 +82,17 @@ function App() {
     }
 
     try {
-      const response = await fetch('/api/report', {
+      console.log('Sending form data:', {
+        course: formData.course,
+        hole: formData.hole,
+        location: formData.location,
+        description: formData.description,
+        memberType: formData.memberType,
+        memberNumber: formData.memberNumber,
+        hasPhoto: !!formData.photo
+      });
+
+      const response = await fetch('http://localhost:4000/api/report', {
         method: 'POST',
         body: formDataToSend,
         credentials: 'include',
@@ -91,13 +101,18 @@ function App() {
         }
       });
       
+      console.log('Response status:', response.status);
+      console.log('Response headers:', Object.fromEntries(response.headers.entries()));
+      
       if (!response.ok) {
         const errorText = await response.text();
         console.error('Server response:', errorText);
-        throw new Error(`HTTP error! status: ${response.status}`);
+        throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
       }
       
       const data = await response.json();
+      console.log('Response data:', data);
+      
       setSubmitStatus({
         success: data.success,
         message: data.success ? 'Report submitted successfully!' : (data.error || 'Error submitting report.')
