@@ -92,11 +92,11 @@ function App() {
         hasPhoto: !!formData.photo
       });
 
-      const response = await fetch('/api/report', {
+      const response = await fetch('http://localhost:4000/api/report', {
         method: 'POST',
         body: formDataToSend,
         mode: 'cors',
-        credentials: 'same-origin',
+        credentials: 'include',
         headers: {
           'Accept': 'application/json',
         }
