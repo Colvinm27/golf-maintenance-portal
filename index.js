@@ -9,12 +9,17 @@ const path = require('path');
 const app = express();
 const upload = multer({ dest: 'uploads/' });
 
-// Enable CORS for all routes
+// CORS configuration
 app.use(cors({
-  origin: ['http://localhost:3000', 'https://thunderous-cascaron-fba5b8.netlify.app'],
-  methods: ['GET', 'POST'],
-  credentials: true
+  origin: ['http://localhost:3000', 'http://localhost:4000', 'http://127.0.0.1:3000', 'http://127.0.0.1:4000'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
+  credentials: true,
+  maxAge: 86400 // 24 hours
 }));
+
+// Add OPTIONS handler for preflight requests
+app.options('*', cors());
 
 // Parse JSON bodies
 app.use(express.json());
@@ -42,7 +47,11 @@ app.get('/api/health', (req, res) => {
 });
 
 app.post('/api/report', upload.single('photo'), async (req, res) => {
-  console.log('Received report submission:', req.body);
+  console.log('Received report submission request');
+  console.log('Request headers:', req.headers);
+  console.log('Request body:', req.body);
+  console.log('Request file:', req.file);
+
   const { course, hole, location, description, memberType, memberNumber } = req.body;
   const photo = req.file;
 

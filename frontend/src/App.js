@@ -92,10 +92,11 @@ function App() {
         hasPhoto: !!formData.photo
       });
 
-      const response = await fetch('http://localhost:4000/api/report', {
+      const response = await fetch('/api/report', {
         method: 'POST',
         body: formDataToSend,
-        credentials: 'include',
+        mode: 'cors',
+        credentials: 'same-origin',
         headers: {
           'Accept': 'application/json',
         }
@@ -132,10 +133,17 @@ function App() {
       }
     } catch (error) {
       console.error('Error details:', error);
-      setSubmitStatus({
-        success: false,
-        message: `Error submitting report: ${error.message}. Please try again later.`
-      });
+      if (error.name === 'TypeError' && error.message === 'Failed to fetch') {
+        setSubmitStatus({
+          success: false,
+          message: 'Unable to connect to the server. Please check your internet connection and try again.'
+        });
+      } else {
+        setSubmitStatus({
+          success: false,
+          message: `Error submitting report: ${error.message}. Please try again later.`
+        });
+      }
     } finally {
       setIsSubmitting(false);
     }
